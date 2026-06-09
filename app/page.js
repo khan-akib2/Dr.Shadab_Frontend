@@ -157,69 +157,64 @@ export default function Home() {
         });
       }
 
-      // --- SECTION 2: HUMAN SIDE SCROLLYTELLING (Pinned) ---
-      const frames = gsap.utils.toArray(".scrollytelling-frame");
-      if (frames.length > 0) {
-        // Progress bar animation
-        gsap.to(".scrollytelling-progress", {
-          width: "100%",
-          ease: "none",
-          scrollTrigger: {
-            trigger: ".scrollytelling-container",
-            start: "top top",
-            end: "+=400%",
-            scrub: 0.1,
-          }
-        });
+      let mm2 = gsap.matchMedia();
+      mm2.add('(min-width: 768px)', () => {
+        // --- SECTION 2: HUMAN SIDE SCROLLYTELLING (Pinned) ---
+        const frames = gsap.utils.toArray('.scrollytelling-frame');
+        if (frames.length > 0) {
+          gsap.to('.scrollytelling-progress', {
+            width: '100%',
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '.scrollytelling-container',
+              start: 'top top',
+              end: '+=400%',
+              scrub: 0.1,
+            }
+          });
 
-        const sideTimeline = gsap.timeline({
-          scrollTrigger: {
-            trigger: ".scrollytelling-container",
-            start: "top top",
-            end: "+=400%",
-            pin: true,
-            scrub: 1, 
-            anticipatePin: 1,
-          }
-        });
+          const sideTimeline = gsap.timeline({
+            scrollTrigger: {
+              trigger: '.scrollytelling-container',
+              start: 'top top',
+              end: '+=400%',
+              pin: true,
+              scrub: 1,
+              anticipatePin: 1,
+            }
+          });
 
-        // Small initial pause
-        sideTimeline.to({}, { duration: 0.2 });
+          sideTimeline.to({}, { duration: 0.2 });
 
-        // Loop and build transition for each frame
-        frames.forEach((frame, index) => {
-          if (index === 0) return; // Keep first frame visible initially
-          
-          const prevFrame = frames[index - 1];
-          const currentChildren = Array.from(frame.children);
+          frames.forEach((frame, index) => {
+            if (index === 0) return;
+            const prevFrame = frames[index - 1];
+            const currentChildren = Array.from(frame.children);
 
-          // Animate previous frame away completely
-          sideTimeline.to(prevFrame, {
-            opacity: 0,
-            y: -50,
-            scale: 0.95,
-            duration: 1,
-            ease: "power2.inOut"
-          }, `transition-${index}`);
-          
-          // Instantly reveal the container (so we can animate its children)
-          sideTimeline.fromTo(frame, 
-            { opacity: 0, y: 50 }, 
-            { opacity: 1, y: 0, duration: 0.1 }, 
-            `transition-${index}`
-          );
+            sideTimeline.to(prevFrame, {
+              opacity: 0,
+              y: -50,
+              scale: 0.95,
+              duration: 1,
+              ease: 'power2.inOut'
+            }, `transition-${index}`);
 
-          // Stagger the text elements inside the frame for a beautiful new animation
-          sideTimeline.fromTo(currentChildren, 
-            { opacity: 0, y: 30 },
-            { opacity: 1, y: 0, duration: 1, stagger: 0.15, ease: "power2.out" },
-            `transition-${index}`
-          );
+            sideTimeline.fromTo(frame,
+              { opacity: 0, y: 50 },
+              { opacity: 1, y: 0, duration: 0.1 },
+              `transition-${index}`
+            );
 
-          // Add a reading pause
-          sideTimeline.to({}, { duration: 0.5 });
-        });
-      }
+            sideTimeline.fromTo(currentChildren,
+              { opacity: 0, y: 30 },
+              { opacity: 1, y: 0, duration: 1, stagger: 0.15, ease: 'power2.out' },
+              `transition-${index}`
+            );
+
+            sideTimeline.to({}, { duration: 0.5 });
+          });
+        }
+      });
 
       // --- SECTION 3: COUNTERS ANIMATION ---
       const counters = document.querySelectorAll(".counter-number");
@@ -449,19 +444,19 @@ export default function Home() {
       </section>
 
       {/* SECTION 2: THE HUMAN SIDE OF MEDICINE (Vertical Pinned Scrollytelling) */}
-      <section className="scrollytelling-container relative w-full h-screen bg-white">
+      <section className="scrollytelling-container relative w-full md:h-screen bg-white pb-24 md:pb-0">
         {/* Progress Bar */}
-        <div className="absolute top-0 left-0 w-full h-1.5 bg-medical-50 z-50">
+        <div className="hidden md:block absolute top-0 left-0 w-full h-1.5 bg-medical-50 z-50">
           <div className="scrollytelling-progress h-full bg-medical-500 w-0 shadow-[0_0_10px_rgba(45,140,165,0.4)]"></div>
         </div>
 
-        <div className="relative w-full h-full flex items-center justify-center px-6 md:px-12 overflow-hidden">
+        <div className="relative w-full h-full flex flex-col md:flex-row md:items-center justify-center px-6 md:px-12 md:overflow-hidden pt-16 md:pt-0 gap-16 md:gap-0">
           {/* Subtle medical gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-br from-ivory via-white to-medical-50/30"></div>
 
-          <div className="relative z-10 max-w-4xl w-full">
+          <div className="relative z-10 max-w-4xl w-full flex flex-col md:block gap-12 md:gap-0">
             {/* Slide Frame 1 */}
-            <div className="scrollytelling-frame absolute inset-0 flex flex-col justify-center items-center text-center gap-6">
+            <div className="scrollytelling-frame relative md:absolute md:inset-0 flex flex-col justify-center items-center text-center gap-6">
               <span className="text-teal-accent text-xs tracking-widest uppercase font-semibold">The Diagnostic Struggle</span>
               <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl text-navy-dark font-light leading-tight">
                 Patients often feel confused.
@@ -473,7 +468,7 @@ export default function Home() {
             </div>
 
             {/* Slide Frame 2 */}
-            <div className="scrollytelling-frame absolute inset-0 flex flex-col justify-center items-center text-center gap-6 opacity-0 translate-y-[50px]">
+            <div className="scrollytelling-frame relative md:absolute md:inset-0 flex flex-col justify-center items-center text-center gap-6 md:opacity-0 md:translate-y-[50px]">
               <span className="text-teal-accent text-xs tracking-widest uppercase font-semibold">Information Overload</span>
               <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl text-navy-dark font-light leading-tight">
                 Searching endlessly online.
@@ -485,7 +480,7 @@ export default function Home() {
             </div>
 
             {/* Slide Frame 3 */}
-            <div className="scrollytelling-frame absolute inset-0 flex flex-col justify-center items-center text-center gap-6 opacity-0 translate-y-[50px]">
+            <div className="scrollytelling-frame relative md:absolute md:inset-0 flex flex-col justify-center items-center text-center gap-6 md:opacity-0 md:translate-y-[50px]">
               <span className="text-teal-accent text-xs tracking-widest uppercase font-semibold">The Right Direction</span>
               <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl text-navy-dark font-light leading-tight">
                 Patients need real guidance.
@@ -497,7 +492,7 @@ export default function Home() {
             </div>
 
             {/* Slide Frame 4 */}
-            <div className="scrollytelling-frame absolute inset-0 flex flex-col justify-center items-center text-center gap-6 opacity-0 translate-y-[50px]">
+            <div className="scrollytelling-frame relative md:absolute md:inset-0 flex flex-col justify-center items-center text-center gap-6 md:opacity-0 md:translate-y-[50px]">
               <span className="text-teal-accent text-xs tracking-widest uppercase font-semibold">The Care Catalyst</span>
               <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl text-navy-dark font-light leading-tight">
                 A trusted doctor makes the difference.
@@ -509,7 +504,7 @@ export default function Home() {
             </div>
 
             {/* Slide Frame 5 */}
-            <div className="scrollytelling-frame absolute inset-0 flex flex-col justify-center items-center text-center gap-6 opacity-0 translate-y-[50px]">
+            <div className="scrollytelling-frame relative md:absolute md:inset-0 flex flex-col justify-center items-center text-center gap-6 md:opacity-0 md:translate-y-[50px]">
               <span className="text-teal-accent text-xs tracking-widest uppercase font-semibold">Meet Dr. Shadab</span>
               <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl text-navy-dark font-light leading-tight">
                 Empathy Meets Clinical Evidence.
@@ -857,12 +852,12 @@ export default function Home() {
       </section>
 
       {/* SECTION 9: WHY TRUST DR. SHADAB (Stacked reveal on scroll) */}
-      <section className="trust-sec relative w-full h-screen bg-white border-b border-medical-100">
-        <div className="relative w-full h-full flex items-center justify-center overflow-hidden px-6 md:px-12">
+      <section className="trust-sec relative w-full md:h-screen bg-white border-b border-medical-100 pb-24 md:pb-0">
+        <div className="relative w-full h-full flex flex-col md:flex-row items-center justify-center overflow-hidden px-6 md:px-12 py-16 md:py-0">
           {/* Dot background */}
           <div className="absolute inset-0 bg-dot-grid opacity-30 pointer-events-none"></div>
 
-          <div className="relative z-10 max-w-4xl w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="relative z-10 max-w-4xl w-full grid grid-cols-1 lg:grid-cols-12 gap-12 md:items-center">
             {/* Title / Intro */}
             <div className="lg:col-span-5 flex flex-col gap-4">
               <span className="text-xs uppercase tracking-widest text-teal-accent font-bold">Why Consult Dr. Shadab?</span>
@@ -875,9 +870,9 @@ export default function Home() {
             </div>
 
             {/* Stacking Cards */}
-            <div className="lg:col-span-7 relative h-[380px] md:h-[420px] w-full flex items-center justify-center">
+            <div className="lg:col-span-7 relative h-auto md:h-[420px] w-full flex flex-col gap-6 md:block md:gap-0 mt-8 md:mt-0">
               {/* Card 1 */}
-              <div className="trust-point-card absolute w-full p-8 rounded-3xl bg-ivory shadow-lg border border-medical-100 flex flex-col gap-4 z-10">
+              <div className="trust-point-card relative md:absolute w-full p-8 rounded-3xl bg-ivory shadow-lg border border-medical-100 flex flex-col gap-4 z-10">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-medical-50 text-medical-700 border border-medical-200 rounded-full text-[10px] uppercase font-bold tracking-wider w-max">
                   Patient First
                 </span>
@@ -888,7 +883,7 @@ export default function Home() {
               </div>
 
               {/* Card 2 */}
-              <div className="trust-point-card absolute w-full p-8 rounded-3xl bg-white shadow-xl border border-medical-100 flex flex-col gap-4 z-20">
+              <div className="trust-point-card relative md:absolute w-full p-8 rounded-3xl bg-white shadow-xl border border-medical-100 flex flex-col gap-4 z-20">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-teal-50 text-teal-accent border border-teal-200 rounded-full text-[10px] uppercase font-bold tracking-wider w-max">
                   Education
                 </span>
@@ -899,7 +894,7 @@ export default function Home() {
               </div>
 
               {/* Card 3 */}
-              <div className="trust-point-card absolute w-full p-8 rounded-3xl bg-ivory shadow-xl border border-medical-100 flex flex-col gap-4 z-30">
+              <div className="trust-point-card relative md:absolute w-full p-8 rounded-3xl bg-ivory shadow-xl border border-medical-100 flex flex-col gap-4 z-30">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-medical-50 text-medical-700 border border-medical-200 rounded-full text-[10px] uppercase font-bold tracking-wider w-max">
                   Integrity
                 </span>
@@ -910,7 +905,7 @@ export default function Home() {
               </div>
 
               {/* Card 4 */}
-              <div className="trust-point-card absolute w-full p-8 rounded-3xl bg-white shadow-2xl border border-medical-100 flex flex-col gap-4 z-45">
+              <div className="trust-point-card relative md:absolute w-full p-8 rounded-3xl bg-white shadow-2xl border border-medical-100 flex flex-col gap-4 z-45">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-teal-50 text-teal-accent border border-teal-200 rounded-full text-[10px] uppercase font-bold tracking-wider w-max">
                   Personalized
                 </span>
@@ -921,7 +916,7 @@ export default function Home() {
               </div>
 
               {/* Card 5 */}
-              <div className="trust-point-card absolute w-full p-8 rounded-3xl bg-medical-950 text-white shadow-2xl border border-medical-900 flex flex-col gap-4 z-50">
+              <div className="trust-point-card relative md:absolute w-full p-8 rounded-3xl bg-medical-950 text-white shadow-2xl border border-medical-900 flex flex-col gap-4 z-50">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-teal-500/20 text-teal-accent border border-teal-800 rounded-full text-[10px] uppercase font-bold tracking-wider w-max">
                   Modern Medicine
                 </span>

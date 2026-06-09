@@ -160,8 +160,16 @@ export default function Navbar() {
       {isOpen && (
         <div
           ref={mobileMenuRef}
-          className="fixed inset-0 z-40 bg-ivory flex flex-col justify-center px-8 md:hidden"
+          className="fixed inset-0 z-50 bg-ivory flex flex-col justify-start pt-24 px-8 md:hidden overflow-y-auto pb-8"
         >
+          {/* Dedicated Close Button inside the drawer */}
+          <button
+            onClick={() => setIsOpen(false)}
+            className="absolute top-6 right-6 p-2 text-navy-dark hover:text-medical-700 focus:outline-none"
+            aria-label="Close Menu"
+          >
+            <X size={28} />
+          </button>
           <div className="flex flex-col gap-6 text-left">
             <div className="border-b border-medical-100 pb-4 mb-4">
               <span className="font-serif text-3xl font-bold text-gradient-navy">
