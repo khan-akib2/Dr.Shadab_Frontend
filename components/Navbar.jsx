@@ -68,16 +68,19 @@ export default function Navbar() {
   // Animate Mobile Menu Open/Close
   useEffect(() => {
     if (isOpen) {
-      gsap.fromTo(
-        mobileMenuRef.current,
-        { clipPath: "circle(0% at 100% 0%)", opacity: 0 },
-        {
-          clipPath: "circle(150% at 100% 0%)",
-          opacity: 1,
-          duration: 0.6,
-          ease: "power3.inOut",
-        }
-      );
+      gsap.to(mobileMenuRef.current, {
+        clipPath: "circle(150% at 100% 0%)",
+        autoAlpha: 1,
+        duration: 0.6,
+        ease: "power3.inOut",
+      });
+    } else {
+      gsap.to(mobileMenuRef.current, {
+        clipPath: "circle(0% at 100% 0%)",
+        autoAlpha: 0,
+        duration: 0.6,
+        ease: "power3.inOut",
+      });
     }
   }, [isOpen]);
 
@@ -157,59 +160,58 @@ export default function Navbar() {
       </header>
 
       {/* Mobile Drawer Navigation overlay */}
-      {isOpen && (
-        <div
-          ref={mobileMenuRef}
-          className="fixed inset-0 z-50 bg-ivory flex flex-col justify-start pt-24 px-8 md:hidden overflow-y-auto pb-8"
+      <div
+        ref={mobileMenuRef}
+        className="fixed inset-0 z-50 bg-ivory flex flex-col justify-start pt-24 px-8 md:hidden overflow-y-auto pb-8 invisible opacity-0"
+        style={{ clipPath: "circle(0% at 100% 0%)" }}
+      >
+        {/* Dedicated Close Button inside the drawer */}
+        <button
+          onClick={() => setIsOpen(false)}
+          className="absolute top-6 right-6 p-2 text-navy-dark hover:text-medical-700 focus:outline-none"
+          aria-label="Close Menu"
         >
-          {/* Dedicated Close Button inside the drawer */}
-          <button
-            onClick={() => setIsOpen(false)}
-            className="absolute top-6 right-6 p-2 text-navy-dark hover:text-medical-700 focus:outline-none"
-            aria-label="Close Menu"
-          >
-            <X size={28} />
-          </button>
-          <div className="flex flex-col gap-6 text-left">
-            <div className="border-b border-medical-100 pb-4 mb-4">
-              <span className="font-serif text-3xl font-bold text-gradient-navy">
-                Dr. Shadab
-              </span>
-              <p className="text-xs uppercase tracking-widest text-teal-accent mt-1">
-                MBBS, Prasad Institute of Medical Sciences
-              </p>
-            </div>
-            {navLinks.map((link, idx) => {
-              const isActive = pathname === link.path;
-              return (
-                <Link
-                  key={link.name}
-                  href={link.path}
-                  onClick={() => setIsOpen(false)}
-                  className={`font-serif text-3xl transition-all hover:pl-2 ${
-                    isActive
-                      ? "text-medical-700 font-medium"
-                      : "text-navy-muted"
-                  }`}
-                  style={{ animationDelay: `${idx * 0.1}s` }}
-                >
-                  {link.name}
-                </Link>
-              );
-            })}
-            <div className="mt-8 pt-6 border-t border-medical-100">
+          <X size={28} />
+        </button>
+        <div className="flex flex-col gap-6 text-left">
+          <div className="border-b border-medical-100 pb-4 mb-4">
+            <span className="font-serif text-3xl font-bold text-gradient-navy">
+              Dr. Shadab
+            </span>
+            <p className="text-xs uppercase tracking-widest text-teal-accent mt-1">
+              MBBS, Prasad Institute of Medical Sciences
+            </p>
+          </div>
+          {navLinks.map((link, idx) => {
+            const isActive = pathname === link.path;
+            return (
               <Link
-                href="/booking"
+                key={link.name}
+                href={link.path}
                 onClick={() => setIsOpen(false)}
-                className="w-full flex items-center justify-center gap-2 py-4 bg-medical-700 text-white rounded-xl text-base font-semibold shadow-md hover:bg-medical-800 transition-colors"
+                className={`font-serif text-3xl transition-all hover:pl-2 ${
+                  isActive
+                    ? "text-medical-700 font-medium"
+                    : "text-navy-muted"
+                }`}
+                style={{ animationDelay: `${idx * 0.1}s` }}
               >
-                <span>Book Consultation</span>
-                <ArrowUpRight size={18} />
+                {link.name}
               </Link>
-            </div>
+            );
+          })}
+          <div className="mt-8 pt-6 border-t border-medical-100">
+            <Link
+              href="/booking"
+              onClick={() => setIsOpen(false)}
+              className="w-full flex items-center justify-center gap-2 py-4 bg-medical-700 text-white rounded-xl text-base font-semibold shadow-md hover:bg-medical-800 transition-colors"
+            >
+              <span>Book Consultation</span>
+              <ArrowUpRight size={18} />
+            </Link>
           </div>
         </div>
-      )}
+      </div>
     </>
   );
 }
